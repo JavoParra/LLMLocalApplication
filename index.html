@@ -91,7 +91,6 @@
     import { CreateWebWorkerMLCEngine } from "https://esm.run/@mlc-ai/web-llm"
 
     const $ = el => document.querySelector(el);
-
     const $form = $('form');
     const $input = $('input');
     const $button = $('button');
@@ -103,10 +102,16 @@
     const $status = $('.status');
     const LLMmodel = "gemma-2-2b-it-q4f16_1-MLC";
     const messages=[];
+    if (window.Worker){
+        console.log("Web Worker is supported in this browser.");
+    } else {
+        console.error("Web Worker is not supported in this browser.");
+        $status.textContent = "Web Worker is not supported in this browser.";
+    }
 
-
+ console.log("Loading model...");
     const engine = await CreateWebWorkerMLCEngine (
-        new Worker('/worker.js', { type: 'module' }),
+        new Worker('worker.js', { type: 'module' }),
          LLMmodel,
     {
         initProgressCallback: (proccess) => {
